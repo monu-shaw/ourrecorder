@@ -1,7 +1,7 @@
 {
   "name": "OURRecorder",
   "short_name": "OurRecorder Lite",
-  "start_url":"./screenrecord.html",
+  "start_url":"./screenrecord.htm",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
