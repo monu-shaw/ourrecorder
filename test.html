@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay controls></video>
+    <!-- <video id="video2" width="640" height="480" autoplay controls></video> -->
+    <button onclick="ONStart()">Start</button>
+    <button onclick="ONStop()">Stop</button>
+    <script>
+        var video = document.getElementById('video');
+        var video2 = document.getElementById('video2');
+
+
+   /*  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getDisplayMedia({ video: true}).then(function(stream) {
+        var binaryData = [];
+        binaryData.push(stream);
+        
+        video.srcObject = stream;
+        //download('m.mp4',new Blob(binaryData))
+        //video.src = window.URL.createObjectURL(new Blob(binaryData));
+        video.play();
+ }).catch((err)=>{
+    alert(err);
+ });
+} */
+
+var mediaRecorder ;
+
+            
+            function ONStart(){
+                navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                sampleRate: 44100
+            }
+          }).then((strem)=>{
+                console.log(strem,"stream")
+                //videoElem.srcObject = strem;
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(strem)
+                let chunks = [];
+                /* videoElem.onloadedmetadata= (e) =>{
+                    videoElem.play();
+                } */
+
+                mediaRecorder.ondataavailable = function (ev) {
+                    console.log({ev})
+                    chunks.push(ev.data)
+                }
+                mediaRecorder.onstop = (ev) => {
+                    // window.clearTimeout(timoutStop);
+                    let blob = new Blob(chunks, { type: "video/mp4" });
+                    console.log(blob,"blob")
+                    chunks = [];
+                    strem.getTracks().forEach(function (track) {
+                        track.stop();
+                    });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    document.body.appendChild(a);
+                    a.style = 'display: none';
+                    a.href = url;
+                    a.download = 'test.mp4';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+
+                }
+
+                mediaRecorder.start();
+            });
+            }
+            async function  ONStop(){
+                await mediaRecorder.stop()
+            }
+
+    </script>
+</body>
+</html>
